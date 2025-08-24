@@ -200,3 +200,4 @@ sendBtn.addEventListener("click", () => {
     chatInput.value = "";
   }
 });
+

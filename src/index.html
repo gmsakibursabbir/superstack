@@ -6,7 +6,12 @@
     <title>SuperStak</title>
 
     <!-- favicon  -->
-
+    <link
+      id="favicon"
+      rel="icon"
+      href="./img/favicon-light.ico"
+      type="image/x-icon"
+    />
     <!-- google font  -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1168,7 +1173,28 @@
         </div>
       </div>
     </div>
+    <script>
+      const favicon = document.getElementById("favicon");
 
+      function setFavicon() {
+        if (
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+        ) {
+          favicon.href = "./img/favicon-dark.ico"; // dark mode
+        } else {
+          favicon.href = "./img/favicon-light.ico"; // light mode
+        }
+      }
+
+      // Initial check
+      setFavicon();
+
+      // Listen for changes in color scheme
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", setFavicon);
+    </script>
     <script src="./js/index.js"></script>
   </body>
 </html>
