@@ -104,3 +104,91 @@ document.addEventListener("click", (e) => {
     icon.classList.remove("rotate-180");
   }
 });
+
+//attachment preview
+
+const attachBtn = document.getElementById("attachBtn");
+const fileInput = document.getElementById("fileInput");
+const chatMessages = document.getElementById("chatMessages");
+const chatInput = document.getElementById("chatInput");
+const sendBtn = document.getElementById("sendBtn");
+
+function showChat() {
+  chatMessages.classList.remove("hidden");
+}
+
+function addCloseButton(container) {
+  const closeBtn = document.createElement("button");
+  closeBtn.innerHTML = `<i class="ri-close-line text-accent-secondary hover:text-red-500"></i>`;
+  closeBtn.className =
+    "absolute -top-1 -right-1 w-4 h-4 flex justify-center items-center bg-white rounded-full";
+  closeBtn.onclick = () => container.remove();
+  return closeBtn;
+}
+
+function appendMessage(content, file = null) {
+  showChat();
+
+  const msgWrapper = document.createElement("div");
+  msgWrapper.className = "relative w-fit max-w-[65%]";
+
+  const msgDiv = document.createElement("div");
+  msgDiv.className =
+    "flex items-center gap-2 bg-accent-secondary/10 text-sm border border-minimal-white rounded-lg px-1 py-1 relative";
+
+  if (file) {
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.className = "w-16 h-16 object-cover rounded-md border";
+        msgDiv.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      let icon = "ri-file-2-line";
+      if (file.type.includes("pdf")) icon = "ri-file-pdf-line";
+      else if (file.type.includes("word")) icon = "ri-file-word-line";
+      else if (file.type.includes("excel") || file.name.endsWith(".csv"))
+        icon = "ri-file-excel-line";
+      else if (file.type.includes("zip") || file.name.endsWith(".rar"))
+        icon = "ri-file-zip-line";
+      else if (file.type.includes("text")) icon = "ri-file-text-line";
+
+      const iconEl = document.createElement("i");
+      iconEl.className = `${icon} text-2xl text-blue-600`;
+
+      const nameEl = document.createElement("span");
+      nameEl.className = "text-sm font-medium truncate max-w-[100px]";
+      nameEl.textContent = file.name;
+
+      msgDiv.appendChild(iconEl);
+      msgDiv.appendChild(nameEl);
+    }
+  } else if (content) {
+    msgDiv.textContent = content;
+  }
+
+  // add close btn to top right
+  msgWrapper.appendChild(msgDiv);
+  msgWrapper.appendChild(addCloseButton(msgWrapper));
+
+  chatMessages.appendChild(msgWrapper);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+attachBtn.addEventListener("click", () => fileInput.click());
+
+fileInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) appendMessage("", file);
+});
+
+sendBtn.addEventListener("click", () => {
+  const text = chatInput.value.trim();
+  if (text) {
+    appendMessage(text);
+    chatInput.value = "";
+  }
+});
