@@ -117,12 +117,21 @@ function showChat() {
   chatMessages.classList.remove("hidden");
 }
 
+function hideChatIfEmpty() {
+  if (!chatMessages.hasChildNodes()) {
+    chatMessages.classList.add("hidden");
+  }
+}
+
 function addCloseButton(container) {
   const closeBtn = document.createElement("button");
   closeBtn.innerHTML = `<i class="ri-close-line text-accent-secondary hover:text-red-500"></i>`;
   closeBtn.className =
-    "absolute -top-1 -right-1 w-4 h-4 flex justify-center items-center bg-white rounded-full";
-  closeBtn.onclick = () => container.remove();
+    "absolute -top-1 -right-1 w-4 h-4 flex justify-center items-center bg-white rounded-full shadow";
+  closeBtn.onclick = () => {
+    container.remove();
+    hideChatIfEmpty();
+  };
   return closeBtn;
 }
 
@@ -170,7 +179,6 @@ function appendMessage(content, file = null) {
     msgDiv.textContent = content;
   }
 
-  // add close btn to top right
   msgWrapper.appendChild(msgDiv);
   msgWrapper.appendChild(addCloseButton(msgWrapper));
 
